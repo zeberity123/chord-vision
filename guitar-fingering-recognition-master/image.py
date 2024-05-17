@@ -1,3 +1,4 @@
+import os
 import numpy as np
 from matplotlib import pyplot as plt
 import cv2
@@ -9,8 +10,10 @@ class Image:
     image processing treatment in a single object
     """
     def __init__(self, path=None, img=None):
+        directory_path = "guitar-fingering-recognition-master\pictures"
+        filename = "chordAm.png"
         if img is None:
-            self.image = cv2.imread(path)
+            self.image = cv2.imread(os.path.join(directory_path, filename))
         elif path is None:
             self.image = img
         else:

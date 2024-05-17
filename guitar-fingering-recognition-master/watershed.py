@@ -50,6 +50,6 @@ def watershed_segmentation(img):
 
 
 if __name__ == "__main__":
-    chord_image = Image(path="./pictures/chordAm.png")
+    chord_image = Image(path="guitar-fingering-recognition-master\pictures\chordAm.png")
     rc = crop_neck_picture(rotate_neck_picture(chord_image)).image
     watershed_segmentation(cv2.cvtColor(rc, cv2.COLOR_BGR2RGB))

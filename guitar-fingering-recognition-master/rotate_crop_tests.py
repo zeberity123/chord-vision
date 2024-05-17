@@ -6,7 +6,7 @@ from image import Image
 from rotate_crop import rotate_neck_picture, crop_neck_picture, resize_image
 
 # Define the directory containing the images
-image_dir = './pictures/'
+image_dir = 'guitar-fingering-recognition-master\pictures'
 
 # Get the list of image files
 image_files = os.listdir(image_dir)
