@@ -25,7 +25,7 @@ pip install -r requirements.txt
 
 ## Resources
 - .
-
+  
 
 ## Team members
 - 김현우 darudayu123@gmail.com
