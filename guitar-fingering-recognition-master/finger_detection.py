@@ -90,17 +90,18 @@ def hand_detection(img):
     circles = cv2.HoughCircles(edges, cv2.HOUGH_GRADIENT, 1, 5,
                                param1=100, param2=20, minRadius=20, maxRadius=90)
     
-    # Draw circles if detected
+    # Process circles if detected
     if circles is not None:
-        circles = np.uint16(np.around(circles[0])) if len(circles) > 0 else None  # Check if circles contains any circles
-        if circles is not None:
-            for i in circles:
-                # Draw the outer circle
-                cv2.circle(img, (i[0], i[1]), i[2], (0, 255, 0), 2)
-                # Draw the center of the circle
-                cv2.circle(img, (i[0], i[1]), 2, (0, 0, 255), 3)
+        circles = np.asarray(circles, dtype=np.float32)  # Ensure circles is a numpy array with float type
+        circles = np.round(circles[0, :]).astype(np.uint16)  # Round and convert to uint16
+        for i in circles:
+            # Draw the outer circle
+            cv2.circle(img, (i[0], i[1]), i[2], (0, 255, 0), 2)
+            # Draw the center of the circle
+            cv2.circle(img, (i[0], i[1]), 2, (0, 0, 255), 3)
 
     return edges, img
+
 
 if __name__ == "__main__":
     print("Run finger_detection_tests.py to have a look at results!")
