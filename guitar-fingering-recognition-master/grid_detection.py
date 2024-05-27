@@ -1,4 +1,4 @@
-from importlib.resources.readers import remove_duplicates
+from importlib_resources.readers import remove_duplicates
 from strings import Strings
 from rotate_crop import *
 import cv2

@@ -12,7 +12,7 @@ def process_images(detection_function):
     
     :param detection_function: A function that applies a specific detection algorithm to the image
     """
-    image_dir = 'guitar-fingering-recognition-master\pictures'
+    image_dir = 'pictures'
     image_files = os.listdir(image_dir)
     num_images = len(image_files)
     num_subplots = num_images * 2

@@ -10,10 +10,10 @@ import time
 def hand_detection_tests(b):
     i = 1
     plt.figure(1)
-    for filename in os.listdir('guitar-fingering-recognition-master/pictures'):
+    for filename in os.listdir('pictures'):
         print("File found: " + filename + " - Processing...")
         start_time = time.time()
-        chord_image = Image(path='guitar-fingering-recognition-master/pictures' + filename)
+        chord_image = Image(path='pictures' + filename)
         rotated_image = rotate_neck_picture(chord_image)
         cropped_image = crop_neck_picture(rotated_image)
 
