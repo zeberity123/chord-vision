@@ -13,7 +13,7 @@ def hand_detection_tests(b):
     for filename in os.listdir('pictures'):
         print("File found: " + filename + " - Processing...")
         start_time = time.time()
-        chord_image = Image(path='pictures' + filename)
+        chord_image = Image(path='pictures', img=filename)
         rotated_image = rotate_neck_picture(chord_image)
         cropped_image = crop_neck_picture(rotated_image)
 
