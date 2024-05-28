@@ -4,7 +4,7 @@ from youtube_dlc import YoutubeDL
 from pathlib import Path
 
 # Replace this URL with the YouTube link you want to download
-youtube_url = "https://www.youtube.com/watch?v=fHC5KZtcljo"
+youtube_url = "https://www.youtube.com/watch?v=qAlyjGrThGo"
 download_path = "Guitar_Chord_Recognition/youtube_frames"
 
 def download_video(youtube_url, download_path):
@@ -21,14 +21,13 @@ def download_video(youtube_url, download_path):
         video_file = ydl.prepare_filename(info_dict)
         return video_file
 
-# Function to perform YOLO hand detection and crop frames
-def detect_and_crop_hand(frame):
-    # Implement YOLO hand detection and cropping logic here
-    # This is just a placeholder, replace it with your actual implementation
-    cropped_frame = frame[50:250, 50:250]  # Placeholder cropping, replace with YOLO logic
-    return cropped_frame
+# Function to crop the right half of the frame
+def crop_right_half(frame):
+    height, width, _ = frame.shape
+    right_half = frame[:, width // 2:width]
+    return right_half
 
-# Modify the extract_frames function to incorporate YOLO hand detection and cropping
+# Modify the extract_frames function to incorporate frame cropping
 def extract_frames(video_path, frame_skip=30):
     video_name = Path(video_path).stem
     frame_folder = os.path.join(download_path, f"{video_name}_frames")
@@ -44,7 +43,7 @@ def extract_frames(video_path, frame_skip=30):
         if not ret:
             break
         if current_frame % frame_skip == 0:
-            cropped_frame = detect_and_crop_hand(frame)  # Get cropped frame with hand detection
+            cropped_frame = crop_right_half(frame)  # Crop right half of the frame
 
             # Resize cropped frame to 224x224 pixels
             resized_frame = cv2.resize(cropped_frame, (224, 224))
