@@ -6,8 +6,8 @@ from torch import nn, optim
 from matplotlib import pyplot as plt
 
 def load_split_train_test(datadir, valid_size):
-    train_transforms = transforms.Compose([transforms.Resize(224),transforms.ToTensor(),])
-    test_transforms = transforms.Compose([transforms.Resize(224),transforms.ToTensor(),])
+    train_transforms = transforms.Compose([transforms.Resize((224, 224)),transforms.ToTensor(),])
+    test_transforms = transforms.Compose([transforms.Resize((224, 224)),transforms.ToTensor(),])
 
     train_data = datasets.ImageFolder(datadir,transform=train_transforms)
     test_data = datasets.ImageFolder(datadir,transform=test_transforms)
@@ -21,8 +21,8 @@ def load_split_train_test(datadir, valid_size):
     train_sampler = SubsetRandomSampler(train_idx)
     test_sampler = SubsetRandomSampler(test_idx)
 
-    trainloader = torch.utils.data.DataLoader(train_data,sampler=train_sampler, batch_size=128)
-    testloader = torch.utils.data.DataLoader(test_data,sampler=test_sampler, batch_size=128)
+    trainloader = torch.utils.data.DataLoader(train_data,sampler=train_sampler, batch_size=64)
+    testloader = torch.utils.data.DataLoader(test_data,sampler=test_sampler, batch_size=64)
 
     return trainloader, testloader
 
@@ -30,6 +30,9 @@ data_dir = "output"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 model = models.resnet50(pretrained=True)
+
+for param in model.parameters():
+    param.requires_grad = False
 
 model.fc = nn.Sequential(
     nn.Linear(2048, 512),
@@ -39,8 +42,8 @@ model.fc = nn.Sequential(
     nn.LogSoftmax(dim=1)
 )
 
-for param in model.parameters():
-    param.requires_grad = False
+criterion = nn.NLLLoss()
+optimizer = optim.Adam(model.fc.parameters(), lr=0.003)
 
 model.to(device)
 
@@ -49,13 +52,9 @@ trainloader, testloader = load_split_train_test(data_dir, .2)
 
 epochs = 15
 steps = 0
-learning_rate = 0.003
 running_loss = 0
 print_every = 10
 train_losses, test_losses = [], []
-
-optimizer = optim.Adam(model.fc.parameters(), lr=learning_rate)
-criterion = nn.NLLLoss()
 
 for epoch in range(epochs):
     for inputs, labels in trainloader:
@@ -64,6 +63,7 @@ for epoch in range(epochs):
         optimizer.zero_grad()
         logps = model.forward(inputs)
         loss = criterion(logps, labels)
+        loss.requires_grad_(True)
         loss.backward()
         optimizer.step()
         running_loss += loss.item()
