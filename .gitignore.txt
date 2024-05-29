@@ -1,1 +1,0 @@
-Guitar_Chord_Recognition/__pycache__
