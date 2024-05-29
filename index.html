@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>YouTube Video Extraction and Model Training</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>YouTube Video Frame Extraction and Model Training</h1>
+    <form id="youtubeForm">
+        <label for="youtubeUrl">YouTube URL:</label>
+        <input type="text" id="youtubeUrl" name="youtube_url" required>
+        <button type="submit" id="submitBtn">Extract Frames</button>
+    </form>
+    <button id="trainBtn" style="display:none;">Train Model</button>
+    <div id="statusMessage"></div>
+
+    <script>
+        $(document).ready(function() {
+            let interval;
+
+            $('#youtubeForm').submit(function(e) {
+                e.preventDefault();
+                const youtubeUrl = $('#youtubeUrl').val();
+                $.post('/extract_frames', { youtube_url: youtubeUrl }, function(data) {
+                    if (data.status === 'started') {
+                        $('#statusMessage').text(data.message);
+                        interval = setInterval(function() {
+                            $.get('/status', function(data) {
+                                $('#statusMessage').text(data.status);
+                            });
+                        }, 1000);
+                    } else {
+                        $('#statusMessage').text('Error processing video.');
+                    }
+                });
+            });
+
+            $('#trainBtn').click(function() {
+                $.post('/train_model', function(data) {
+                    if (data.status === 'success') {
+                        alert(data.message);
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                });
+            });
+
+            $(document).ajaxStop(function() {
+                clearInterval(interval);
+                $('#trainBtn').show();  // Show the train button once extraction is done
+            });
+        });
+    </script>
+</body>
+</html>
