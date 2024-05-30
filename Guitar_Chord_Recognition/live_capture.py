@@ -35,7 +35,7 @@ height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
 textposition = (10, height - 20)
 
 # Smoothing parameters
-prediction_buffer = deque(maxlen=5)  # Store the last 5 predictions
+prediction_buffer = deque(maxlen=1)  # Store the last 5 predictions
 stable_prediction = None
 
 # Initialize MediaPipe Hand model
