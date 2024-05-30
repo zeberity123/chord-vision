@@ -1,9 +1,9 @@
 import cv2
 import numpy as np
 from chord_utils import predict_image
-from PIL import Image
 import torch
 from torchvision import transforms
+import time
 
 
 # Ensure the to_pil function and predict_image function are defined
@@ -30,6 +30,7 @@ predicted_image = np.zeros((1, 168, 224, 3))
 
 for i in range(10000):
     ret, frame = vid.read()
+    time.sleep(0.12)
     
     if not ret:
         print("Error: Failed to capture a frame.")
