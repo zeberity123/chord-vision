@@ -1,64 +1,94 @@
 import cv2
 import numpy as np
-from chord_utils import predict_image
-import torch
 from torchvision import transforms
-import time
+import torch
+from collections import deque
+from PIL import Image
 
+# Function to predict the chord from the image
+def predict_image(input_size, device, model, image):
+    image_t = input_size(image).unsqueeze(0).to(device)
+    model.eval()
+    with torch.no_grad():
+        outputs = model(image_t)
+    _, predicted = torch.max(outputs, 1)
+    return predicted.item()
 
-# Ensure the to_pil function and predict_image function are defined
-# def to_pil(image):
-#     return Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
-
+# Class labels
 classes = ['A', 'B', 'C', 'D', 'E', 'F', 'G','_BG']
+
+# Device configuration
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-input_size = transforms.Compose([transforms.Resize((224, 224)),transforms.ToTensor(),])
-model=torch.load('chord_vision.pth')
+
+# Image preprocessing transformation
+input_size = transforms.Compose([
+    transforms.Resize((224, 224)),
+    transforms.ToTensor(),
+])
+
+# Load the trained model
+model = torch.load('chord_vision.pth')
+model = model.to(device)
+
+# Convert OpenCV image to PIL image
 to_pil = transforms.ToPILImage()
 
+# Initialize video capture device
 vid = cv2.VideoCapture(-1)
-
 if not vid.isOpened():
     print("Error: Could not open video capture device.")
     exit()
 
-width  = vid.get(cv2.CAP_PROP_FRAME_WIDTH)
-height = vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
-textposition = (10, int(height) - 20)
+# Get video frame width and height
+width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
+height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
+textposition = (10, height - 20)
 
-predicted_image = np.zeros((1, 168, 224, 3))
+# Smoothing parameters
+prediction_buffer = deque(maxlen=30)  # Store last 30 predictions
+stable_prediction = None
 
 for i in range(10000):
     ret, frame = vid.read()
-    time.sleep(0.12)
     
     if not ret:
         print("Error: Failed to capture a frame.")
         continue
     
-    # dim = (224, 168)
-    # resized = cv2.resize(frame, dim)
-    
-    # predicted_image[0,:,:,:] = resized
+    # Convert frame to PIL Image
     image = to_pil(frame)
     
-    # y_pred = predict_image(image)
+    # Get the predicted index
     index = predict_image(input_size, device, model, image)
-    print(classes[index]) # sanity check on the prediction
     
-    chord_legend = cv2.imread("chords/%s.jpg" % classes[index], cv2.IMREAD_COLOR)
-    legend_size = chord_legend.shape[0]
-    W = frame.shape[1]
-    center_column = 0  # Adjust based on your layout
-    frame[0:legend_size, W - legend_size - center_column:W - center_column] = chord_legend
+    # Add prediction to buffer
+    prediction_buffer.append(index)
     
-    cv2.putText(frame, "Predicted chord: %s " % classes[index], textposition, cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
+    # Use the most common prediction in the buffer as the stable prediction
+    if len(prediction_buffer) == prediction_buffer.maxlen:
+        stable_prediction = max(prediction_buffer, key=prediction_buffer.count)
+    
+    if stable_prediction is not None:
+        print(classes[stable_prediction])  # Sanity check on the prediction
+        
+        # Load the corresponding chord legend image
+        chord_legend = cv2.imread(f"chords/{classes[stable_prediction]}.jpg", cv2.IMREAD_COLOR)
+        if chord_legend is not None:
+            legend_size = chord_legend.shape[0]
+            W = frame.shape[1]
+            frame[0:legend_size, W - legend_size:] = chord_legend
+
+        # Put the prediction text on the frame
+        cv2.putText(frame, f"Predicted chord: {classes[stable_prediction]}", textposition, cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
+    
+    # Show the frame
     cv2.imshow('Chord prediction', frame)
 
+    # Break the loop if the user presses 'q'
     keypress = cv2.waitKey(1) & 0xFF
-    # if the user pressed "q", then stop looping
-    if keypress == ord("q"):
+    if keypress == ord('q'):
         break
 
+# Release the video capture and close all OpenCV windows
 vid.release()
 cv2.destroyAllWindows()
