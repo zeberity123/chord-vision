@@ -43,7 +43,7 @@ for i in range(10000):
     
     # y_pred = predict_image(image)
     index = predict_image(input_size, device, model, image)
-    # print(classes[y_pred]) # sanity check on the prediction
+    print(classes[index]) # sanity check on the prediction
     
     chord_legend = cv2.imread("chords/%s.jpg" % classes[index], cv2.IMREAD_COLOR)
     legend_size = chord_legend.shape[0]
