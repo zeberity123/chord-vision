@@ -25,25 +25,24 @@ with mp_hands.Hands(min_detection_confidence=0.5, min_tracking_confidence=0.5) a
         if not ret:
             break
 
-        # Convert the frame to RGB for MediaPipe
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        # Determine when to capture a frame (every 30 frames)
+        if frame_count % 30 == 0:
+            # Convert the frame to RGB for MediaPipe
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-        # Process the frame for hand detection
-        results = hands.process(frame_rgb)
+            # Process the frame for hand detection
+            results = hands.process(frame_rgb)
 
-        # Draw hand annotations on the frame
-        if results.multi_hand_landmarks:
-            for hand_landmarks in results.multi_hand_landmarks:
-                mark_hand_landmarks(frame, hand_landmarks)
+            # Draw hand annotations on the frame
+            if results.multi_hand_landmarks:
+                for hand_landmarks in results.multi_hand_landmarks:
+                    mark_hand_landmarks(frame, hand_landmarks)
 
-        # Save the marked frame as an image
-        marked_frame_path = output_folder / f"frame_{frame_count}.png"
-        cv2.imwrite(str(marked_frame_path), frame)
+            # Save the marked frame as an image
+            marked_frame_path = output_folder / f"frame_{frame_count}.png"
+            cv2.imwrite(str(marked_frame_path), frame)
 
         frame_count += 1
-
-        if frame_count == 30:  # Save 30 frames
-            break
 
 # Release the video capture
 vid.release()
