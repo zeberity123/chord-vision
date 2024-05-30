@@ -12,7 +12,7 @@ def process_images(detection_function):
     
     :param detection_function: A function that applies a specific detection algorithm to the image
     """
-    image_dir = 'guitar-fingering-recognition-master\pictures'
+    image_dir = 'pictures'
     image_files = os.listdir(image_dir)
     num_images = len(image_files)
     num_subplots = num_images * 2
@@ -25,7 +25,7 @@ def process_images(detection_function):
         try:
             print(f"File found: {filename} - Processing...")
             start_time = time.time()
-            chord_image = Image(path=os.path.join(image_dir, filename))
+            chord_image = Image(path=image_dir, img=filename)
             rotated_image = rotate_neck_picture(chord_image)
             cropped_image = crop_neck_picture(rotated_image)
             detection_result = detection_function(cropped_image)

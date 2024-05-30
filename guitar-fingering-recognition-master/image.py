@@ -10,14 +10,14 @@ class Image:
     image processing treatment in a single object
     """
     def __init__(self, path=None, img=None):
-        directory_path = "guitar-fingering-recognition-master\pictures"
+        directory_path = "pictures"
         filename = "chordAm.png"
+        self.image = cv2.imread(f'{directory_path}/{img}')
         if img is None:
             self.image = cv2.imread(os.path.join(directory_path, filename))
         elif path is None:
             self.image = img
-        else:
-            print("Incorrect image parameter")
+            
         self.gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
 
     def __str__(self):
