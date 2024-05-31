@@ -18,13 +18,15 @@ input_size = transforms.Compose([
 ])
 
 # Load the trained model
-model = torch.load('chord_vision.pth')
+model = torch.load('chord_vision_pure_vid.pth')
 model = model.to(device)
+model.eval()
 
 # Convert OpenCV image to PIL image
 to_pil = transforms.ToPILImage()
 
-vid = cv2.VideoCapture(0)
+# vid = cv2.VideoCapture(0)
+vid = cv2.VideoCapture('test_vid/cropped_chord_major.mp4')
 if not vid.isOpened():
     print("Error: Could not open video capture device.")
     exit()
@@ -81,14 +83,14 @@ with mp_hands.Hands(min_detection_confidence=0.5, min_tracking_confidence=0.5) a
             print(classes[stable_prediction])  # Sanity check on the stable prediction
             
             # Load the corresponding chord legend image
-            chord_legend = cv2.imread(f"chords/{classes[stable_prediction]}.jpg", cv2.IMREAD_COLOR)
+            chord_legend = cv2.imread(f"chords/{classes[index]}.jpg", cv2.IMREAD_COLOR)
             if chord_legend is not None:
                 legend_size = chord_legend.shape[0]
                 W = frame.shape[1]
                 frame[0:legend_size, W - legend_size:] = chord_legend
 
             # Put the prediction text on the frame
-            cv2.putText(frame, f"Predicted chord: {classes[stable_prediction]}", textposition, cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
+            cv2.putText(frame, f"Predicted chord: {classes[index]}", textposition, cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
         
         # Show the frame with hand landmarks
         cv2.imshow('Chord prediction', frame)

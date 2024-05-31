@@ -95,7 +95,7 @@ for epoch in range(epochs):
             running_loss = 0
             model.train()
 
-torch.save(model, 'chord_vision.pth')
+torch.save(model, 'chord_vision_pure_vid.pth')
 
 plt.plot(train_losses, label='Training loss')
 plt.plot(test_losses, label='Validation loss')

@@ -7,7 +7,7 @@ from chord_utils import predict_image, get_random_images
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 input_size = transforms.Compose([transforms.Resize((224, 224)),transforms.ToTensor(),])
-model=torch.load('chord_vision.pth')
+model=torch.load('chord_vision_pure_vid.pth')
 model.eval()
 
 
