@@ -11,11 +11,11 @@ mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 
 # Load the video file
-video_path = Path("Guitar_Chord_Recognition/youtube_frames/Guitar Chords.mp4")
+video_path = Path("test_vid/custom_3_720p.mp4")
 vid = cv2.VideoCapture(str(video_path))
 
 # Prepare the folder to save marked frames
-output_folder = Path("Guitar_Chord_Recognition/youtube_frames/marked")
+output_folder = Path("test_vid/custom_3")
 output_folder.mkdir(parents=True, exist_ok=True)
 
 with mp_hands.Hands(min_detection_confidence=0.5, min_tracking_confidence=0.5) as hands:
@@ -26,7 +26,7 @@ with mp_hands.Hands(min_detection_confidence=0.5, min_tracking_confidence=0.5) a
             break
 
         # Determine when to capture a frame (every 30 frames)
-        if frame_count % 30 == 0:
+        if frame_count % 2 == 0:
             # Convert the frame to RGB for MediaPipe
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
