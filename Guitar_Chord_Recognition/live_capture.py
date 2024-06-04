@@ -18,7 +18,7 @@ input_size = transforms.Compose([
 ])
 
 # Load the trained model
-model = torch.load('chord_custom_mix2.pth')
+model = torch.load('chord_custom_mix4.pth')
 model = model.to(device)
 model.eval()
 
