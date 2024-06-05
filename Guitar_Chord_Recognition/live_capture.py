@@ -18,7 +18,7 @@ input_size = transforms.Compose([
 ])
 
 # Load the trained model
-model = torch.load('chord_custom_mix4.pth')
+model = torch.load('chord_custom_mix250.pth')
 model = model.to(device)
 model.eval()
 
@@ -27,6 +27,7 @@ to_pil = transforms.ToPILImage()
 
 # vid = cv2.VideoCapture(0)
 vid = cv2.VideoCapture('test_vid/custom_3_720p.mp4')
+# vid = cv2.VideoCapture('chord_vids/g2_major.mp4')
 if not vid.isOpened():
     print("Error: Could not open video capture device.")
     exit()

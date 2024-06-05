@@ -50,7 +50,7 @@ model.to(device)
 trainloader, testloader = load_split_train_test(data_dir, .2)
 # print(trainloader.dataset.classes)
 
-epochs = 8
+epochs = 5
 steps = 0
 running_loss = 0
 print_every = 10
@@ -95,7 +95,7 @@ for epoch in range(epochs):
             running_loss = 0
             model.train()
 
-torch.save(model, f'chord_custom_mix4.pth')
+torch.save(model, f'chord_custom_mix250_5ep.pth')
 
 plt.plot(train_losses, label='Training loss')
 plt.plot(test_losses, label='Validation loss')
