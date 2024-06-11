@@ -26,11 +26,13 @@ pip install -r requirements.txt
 ## How to run
 - 동영상의 경우:
 ```
+cd Guitar_Chord_Recognition
 python3 video_run.py
 ```
 
 - 라이브 카메라의 경우:
 ```
+cd Guitar_Chord_Recognition
 python live_run.py
 ```
 
