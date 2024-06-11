@@ -53,7 +53,10 @@ python live_run.py
 - Numpy
 - Tensorflow
 
-  
+## 참고 링크
+- https://github.com/RyunosukeIchiyasu/Guitar_Chords_Classification.git
+- https://github.com/paulden/guitar-fingering-recognitionProject
+- https://github.com/periclesrocha/CS445-CP.git
 
 ## Team members
 - 김현우 darudayu123@gmail.com
